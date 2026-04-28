@@ -1,28 +1,27 @@
 pipeline {
     agent any
 
-    environment {
-        IMAGE = "piyalichoudhury/my-app"
-    }
-
     stages {
 
-        stage('Build') {
+        stage('Clone') {
             steps {
-                sh 'docker build -t $IMAGE .'
+                git 'https://github.com/PiyaliChoudhury/my-app.git'
             }
         }
 
-        stage('Push') {
+        stage('Build (Simulated)') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'docker-creds', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
-                    sh 'docker login -u $USER -p $PASS'
-                    sh 'docker push $IMAGE'
-                }
+                echo "Docker build simulated successfully"
             }
         }
 
-        stage('Deploy') {
+        stage('Push (Simulated)') {
+            steps {
+                echo "Docker push simulated successfully"
+            }
+        }
+
+        stage('Deploy to Kubernetes') {
             steps {
                 sh 'kubectl apply -f deployment.yaml'
                 sh 'kubectl apply -f service.yaml'
